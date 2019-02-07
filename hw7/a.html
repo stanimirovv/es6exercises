@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Randomly generated colorful rectangles.</title>
+<style>
+.rectangle {
+    width: 200px;
+    height: 100px;
+}
+
+#rectangleWrapper {
+    padding-top: 50px;
+    padding-left: 50px;
+    padding-right: 50px;
+}
+</style>
+</head>
+<body>
+<h1>Randomly generated colorful rectangles.</h1>
+<h2>Each of the 10 rectangles's color is randomly generated each time the page is rendered</h2>
+<div id="rectangleWrapper">
+</div>
+
+</body>
+<script>
+
+let rectangleIDs = [];
+for (let i = 0; i < 10; i++) {
+    generateSection(i);
+}
+console.log('Here are the rectangle IDs', rectangleIDs);
+
+// one section is a rectangle with it's hex color bellow it
+function generateSection(elementID) {
+    let hexColor = getRandomHexColor();
+    let rectangle = generateColoredRectangle(hexColor);
+    rectangle.id = elementID;
+    rectangleIDs.push(elementID);
+    let p = document.createElement('p');
+    p.innerText = hexColor;
+
+    console.log('append child', rectangle);
+    document.getElementById('rectangleWrapper').appendChild(rectangle);
+    document.getElementById('rectangleWrapper').appendChild(p);
+}
+
+function generateColoredRectangle(hexColor) {
+    let div = document.createElement('div');
+    div.id = hexColor;
+    div.style='background:' + hexColor + ';';
+    div.className='rectangle';
+    return div;
+}
+
+function getRandomHexColor() {
+    return '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+}
+</script>
+</html>
