@@ -1,0 +1,35 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Tic tac toe</title>
+<script type="text/javascript" src="gameLogic.js"></script>
+<script type="text/javascript" src="render.js"></script>
+  <style>
+    .gameBoard {
+      display: grid;
+      grid-template-columns: repeat(3, 33%);
+      grid-gap: 10px;
+      width:310px;
+    }
+    .square {
+      width: 33%x;
+      height: 100px;
+      border-color: black;
+      border-style: solid;
+      border: solid 1px black;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+  </style>
+  </head>
+  <body>
+    <div id="gameBoard" class="gameBoard" >
+    </div>
+  </body>
+  <script>
+    // Initialize the game
+    window.onload = initGameBoard;
+  </script>
+
+</html>
