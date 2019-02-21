@@ -1,0 +1,50 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>To-do list</title>
+  <style>
+#app {
+  margin: auto;
+  width: 33%;
+  margin-top: 100px;
+  padding: 40px;
+  background:white;
+-webkit-box-shadow: 0px 0px 78px -6px rgba(0,0,0,0.75);
+-moz-box-shadow: 0px 0px 78px -6px rgba(0,0,0,0.75);
+box-shadow: 0px 0px 78px -6px rgba(0,0,0,0.75);
+}
+    body {
+        background:#F0F8FF;
+    }
+  </style>
+  <script type="text/javascript" src="tasks.js"></script>
+  <script type="text/javascript" src="users.js"></script>
+  <script type="text/javascript" src="render.js"></script>
+  </head>
+  <body>
+    <div id="app" >
+    </div>
+  </body>
+  <script>
+    // Initialize the game
+    window.onhashchange = route;
+    function route() {
+        console.log('aaaaa');
+        if (location.hash === '#') {
+          console.log("You're visiting a cool feature!");
+        } else if(location.hash ==='#register') {
+          console.log(location.hash);
+        } else if(location.hash ==='#login') {
+          console.log(location.hash);
+        } else if(location.hash ==='#dashboard') {
+          console.log(location.hash);
+        } else if(location.hash ==='#users') {
+          console.log(location.hash);
+        }
+    }
+    window.onload = initializeLogin;
+    console.log('asd');
+    
+  </script>
+
+</html>
