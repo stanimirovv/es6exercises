@@ -20,7 +20,7 @@ class User {
  * Functions with local storage access
  */
 // TODO check type of user
-function store(user) {
+function storeUser(user) {
   let userJSON = JSON.stringify(user);
   const key = generateKey(user.email);
   localStorage.setItem(key, userJSON);
@@ -40,32 +40,23 @@ function login(email, password) {
   let user = fetchUser(email); 
   if (user === null ) {
     console.log("User doesn't exist!", email);
-    return null;
+    return false;
   }
 
   if (user.password != password ) {
     console.log("Password mismatch", user.password, " ", password);
-    return null;
+    return false;
   }
 
   localStorage.setItem(loggedInUserPrefix, email);
+  return true;
 }
 
-function getLoggedInUser() {
+function getLoggedInUserEmail() {
   return localStorage.getItem(loggedInUserPrefix);
 }
 
+// Note: this is a bad function, should make a bunch of checks
 function logout(email) {
   return localStorage.removeItem(loggedInUserPrefix);
 }
-
-// Tests
-// let newUser = new User('Zlatin', 'Testov', 'zlatin@zlat.in', '123');
-// store(newUser);
-// let storedUser = fetchUser(newUser.email);
-// console.log(storedUser);
-// console.log('LoggedIn: ', getLoggedInUser());
-// login(newUser.email, newUser.password);
-// console.log('LoggedIn: ', getLoggedInUser());
-// logout(newUser.email);
-// console.log('LoggedIn: ', getLoggedInUser());

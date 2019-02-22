@@ -32,9 +32,12 @@ class TaskList {
     }
   }
 
-  // TODO add checks
   changeName(newName) {
+    if ( newName === undefined || newName === ''){
+      return null;
+    }
     this.name = newName;
+    return 1;
   }
 
   /* private functions */
@@ -48,10 +51,13 @@ class TaskList {
 /*
  * Storage related tasks
  */
-function getAllTasklists(username) {
-  const key = getUserTasklistKey(username);
+function getAllTasklists(email) {
+  const key = getUserTasklistKey(email);
   let tasklistsJSON = localStorage.getItem(key);
   let tasklistsStruct = JSON.parse(tasklistsJSON); 
+  if (tasklistsStruct === null ) {
+    return null;
+  }
   let tasklists = [];
   for (let listStruct of tasklistsStruct) {
     let taskliskObj = new TaskList(listStruct.name, listStruct.tasks);
@@ -61,29 +67,17 @@ function getAllTasklists(username) {
   return tasklists;
 }
 
-function storeUserTasklists(username, taskLists) {
-  const key = getUserTasklistKey(username);
+function storeUserTasklists(email, taskLists) {
+  if (email === undefined || email === '' || typeof(taskLists) != 'object') {
+    return false;
+  }
+  const key = getUserTasklistKey(email);
   const taskListsJSON = JSON.stringify(taskLists);
 
   localStorage.setItem(key, taskListsJSON);
+  return true;
 }
 
-function getUserTasklistKey(username) {
-  return username + '_tasklists';
+function getUserTasklistKey(email) {
+  return email + '_tasklists';
 }
-
-// Tests
-// let taskList = new TaskList();
-// taskList.addTask('asd');
-// taskList.addTask('dzhe asd');
-// taskList.addTask('dzhe asd');
-
-// console.log(taskList);
-
-// taskList.finishTask(taskList.tasks[0].id);
-// console.log(taskList);
-
-// storeUserTasklists('zlati', [taskList]);
-
-// const testTasklist = getAllTasklists('zlati');
-// console.log(testTasklist);
