@@ -1,4 +1,3 @@
-// TODO remove all magic variables
 function initializeLogin() {
   let app = document.getElementById('app');
   app.innerHTML = '';
@@ -8,20 +7,9 @@ function initializeLogin() {
   if ( getLoggedInUserEmail() != null ) {
     return renderDashboard();
   }
-  
-  let loginForm = document.createElement('div');
-  let text = document.createElement('p');
-  text.innerText = 'Login form';
 
-  let loginEmail = document.createElement('input');
-  loginEmail.placeholder = 'Email';
-  let loginPassword = document.createElement('input');
-  loginPassword.type = 'password';
-  loginPassword.placeholder = 'Password';
-
-
-  let submit = document.createElement('button');
-  submit.innerText = 'Login!';
+  app.innerHTML = renderLoginTemplate();
+  let submit = document.getElementById('loginBtn');
   submit.addEventListener('click', function(ev){
     console.log(ev.target.parentNode);
     let loginForm = ev.target.parentNode;
@@ -35,48 +23,24 @@ function initializeLogin() {
     renderDashboard();
   });
 
-  let registerBtn = document.createElement('button');
+  let registerBtn = document.getElementById('registerBtn');
   registerBtn.innerText = 'Register!';
   registerBtn.addEventListener('click', function(ev){
     console.log(ev.target.parentNode);
     renderRegister();
   });
+}
 
-  loginForm.appendChild(text);
-  loginForm.appendChild(loginEmail);
-  loginForm.appendChild(loginPassword);
-  loginForm.appendChild(submit);
-  loginForm.appendChild(registerBtn);
-  
-  app.appendChild(loginForm);
+function renderLoginTemplate() {
+  return `<div><p>Login form</p><input id="inputEmail" placeholder="Email" ><input id="inputPassword" type="password" placeholder="Password"><button id="loginBtn">Login!</button><button id="registerBtn">Register!</button></div>`;
 }
 
 function renderRegister() {
   let app = document.getElementById('app');
-  app.innerHTML = '';
+  app.innerHTML = renderRegisterTemplate();;
   renderHeader();
-  
-  let registerForm = document.createElement('div');
-  let text = document.createElement('p');
-  text.innerText = 'Register form';
 
-  let registerEmail = document.createElement('input');
-  registerEmail.placeholder = 'Email';
-  let registerPassword = document.createElement('input');
-  registerPassword.type = 'password';
-  registerPassword.placeholder = 'Password';
-  let firstName = document.createElement('input');
-  firstName.placeholder = 'First name';
-  let lastName = document.createElement('input');
-  lastName.placeholder = 'Last Name';
-  
-  let termsAgree = document.createElement('input');
-  termsAgree.type = 'checkbox';
-  let termsAgreeLabel = document.createElement('span');
-  termsAgreeLabel.innerText = 'I agree to the Terms of Use';
-
-  let submit = document.createElement('button');
-  submit.innerText = 'Register!';
+  let submit = document.getElementById('registerBtn');
   submit.addEventListener('click', function(ev){
     let loginForm = ev.target.parentNode;
     let firstName = loginForm.childNodes[1].value;
@@ -105,54 +69,41 @@ function renderRegister() {
     login(email, password);
     renderDashboard();
   });
+}
 
-  registerForm.appendChild(text);
-  registerForm.appendChild(firstName);
-  registerForm.appendChild(lastName);
-  registerForm.appendChild(registerEmail);
-  registerForm.appendChild(registerPassword);
-  registerForm.appendChild(termsAgree);
-  registerForm.appendChild(termsAgreeLabel);
-  registerForm.appendChild(submit);
-  
-  app.appendChild(registerForm);
+function renderRegisterTemplate() {
+  return `<div><p>Register form</p><input placeholder="First name"><input placeholder="Last Name"><input placeholder="Email"><input type="password" placeholder="Password"><input type="checkbox"><span>I agree to the Terms of Use</span><button id="registerBtn">Register!</button></div>`;
 }
 
 function renderDashboard() {
   // Get Data
-  // TODO error handling for null
   let loggedInUserEmail = getLoggedInUserEmail();
   const user = fetchUser(loggedInUserEmail);
   let tasklists = getAllTasklists(loggedInUserEmail);
   
   // Render UI
   let app = document.getElementById('app');
-  app.innerHTML = '';
+  app.innerHTML = renderDashboardHeaderTemplate(user.firstName, user.lastName);
+  app.innerHTML += renderDashboardListsTemplate(tasklists);
   renderHeader();
 
-  // header
-  let header = document.createElement('p');
-  header.innerHTML = 'Logged in as: ' + user.firstName + '  ' + user.lastName;
-  // add list form
-  let newTaskListInput = document.createElement('input');
-  newTaskListInput.placeholder = 'Add new tasklist name';
-  let submit = document.createElement('button');
-  submit.innerText = 'Add task list';
+  let submit = document.getElementById('taskListBtn');
   submit.addEventListener('click', addTasklist);
-  
   // render list form
-  let ul = document.createElement('ul');
-  for (tasklist of tasklists) {
-    let li = document.createElement('li');
-    li.innerText = tasklist.name;
-    ul.appendChild(li);
-  }
+  let ul = document.getElementById('taskLists');
   ul.addEventListener('click', viewTaskList);
+}
 
-  app.appendChild(header);
-  app.appendChild(newTaskListInput);
-  app.appendChild(submit);
-  app.appendChild(ul);
+function renderDashboardHeaderTemplate(firstName, lastName) {
+  return `<p>Logged in as: ${firstName} ${lastName}</p><input placeholder="Add new tasklist name"><button id="taskListBtn">Add task list</button>`;
+}
+
+function renderDashboardListsTemplate(tasklists) {
+  let tasklistsTemplate = '';
+  for (tasklist of tasklists) {
+    tasklistsTemplate += `<li>${tasklist.name}</li>`;
+  }
+  return `<ul id="taskLists">${tasklistsTemplate}</ul>`;
 }
 
 function renderTasklist(tasklist) {
@@ -161,18 +112,29 @@ function renderTasklist(tasklist) {
   renderHeader();
 
   console.log(tasklist.tasks);
-  
-  let ul = document.createElement('ul');
+
+  let taskName = `<input type="text" id="tasklistName" value="${tasklist.name}"/>`;
+  let input = `<input type="text"  placeholder="Enter task description" />`;
+  let addTaskBtnHtml = `<button id="addTaskBtn">Add new Task!</button>`;
+  let saveListHtml = `<button id="saveList">Save!</button>`;
+  let listHtml = `<ul id="asd">`;
   for (task of tasklist.tasks) {
     console.log('task: ', task);
-    let li = document.createElement('li');
-    li.innerText = task.description;
-    li.setAttribute('data-id', task.id);
     if ( task.isFinished) {
-      li.className = 'finishedTask'; 
+      listHtml += `<li class="finishedTask">${task.description}</li>`;
+    } else {
+      listHtml += `<li data-id="${task.id}">${task.description}</li>`;
     }
-    ul.appendChild(li);
   }
+  listHtml += `</ul>`;
+  
+  app.innerHTML += taskName;
+  app.innerHTML += input;
+  app.innerHTML += addTaskBtnHtml;
+  app.innerHTML += listHtml;
+  app.innerHTML += saveListHtml;
+  
+  let ul = document.getElementById('asd');
   ul.addEventListener('click', ev => {
     const taskId = ev.target.getAttribute('data-id');
     for (task of tasklist.tasks ) {
@@ -184,8 +146,7 @@ function renderTasklist(tasklist) {
     } 
   });
   
-  let saveBtn = document.createElement('button');
-  saveBtn.innerText = 'Save';
+  let saveBtn = document.getElementById('saveList');
   saveBtn.addEventListener('click', ev => {
     let loggedInUserEmail = getLoggedInUserEmail();
     let lists = getAllTasklists(loggedInUserEmail);
@@ -200,26 +161,15 @@ function renderTasklist(tasklist) {
     console.log(lists);
   });
 
-  let input = document.createElement('input');
-  input.placeholder = 'Enter task description';
-  let addTaskBtn = document.createElement('button');
-  addTaskBtn.innerText = 'Add new Task';
+  let addTaskBtn = document.getElementById('addTaskBtn');
   addTaskBtn.addEventListener('click', (ev) => {
     let description = ev.target.parentNode.childNodes[1].value;
     tasklist.addTask(description); 
     renderTasklist(tasklist);
   });
 
-
-  let taskName = document.createElement('input');
-  taskName.id = 'tasklistName';
-  taskName.value = tasklist.name;
+  // input.placeholder = 'Enter task description';
   
-  app.appendChild(taskName);
-  app.appendChild(input);
-  app.appendChild(addTaskBtn);
-  app.appendChild(ul);
-  app.appendChild(saveBtn);
 }
 
 function renderHeader() {
@@ -228,26 +178,19 @@ function renderHeader() {
   let appHeader = document.getElementById('header');
   appHeader.innerHTML = '';
 
-  let header = document.createElement('div');
   if ( currentLoggedInUserEmail === null ) {
-    return appHeader.appendChild(header);
+    return appHeader.innerHTML = '<div></div>';
   }
+  appHeader.innerHTML = renderHeaderTemplate();
   
-  let settings = document.createElement('button'); 
-  settings.innerHTML = 'settings';
+  let settings = document.getElementById('settingsBtn'); 
   settings.addEventListener('click', function(ev) { initialiseSettigns(); });
-  let logOut = document.createElement('button'); 
-  logOut.innerHTML = 'log out';
+  let logOut = document.getElementById('logoutBtn'); 
   logOut.addEventListener('click', function(ev) { logout(currentLoggedInUserEmail); initializeLogin(); });
+}
 
-  let br = document.createElement('span');
-  br.innerHTML = '	&nbsp;	&nbsp;	&nbsp;';
-
-  header.appendChild(settings);
-  header.appendChild(br);
-  header.appendChild(logOut);
-
-  return appHeader.appendChild(header);
+function renderHeaderTemplate() {
+  return `<div id="header"><div><button id="settingsBtn">settings</button><span>	&nbsp;	&nbsp;	&nbsp;</span><button id="logoutBtn">log out</button></div></div>`;
 }
 
 /*
@@ -289,26 +232,10 @@ function initialiseSettigns() {
   const user = fetchUser(loggedInUserEmail);
 
   let app = document.getElementById('app');
-  app.innerHTML = '';
+  app.innerHTML = renderSettingsTemplate();
   renderHeader();
   
-  let userEditMenu = document.createElement('div');
-  let text = document.createElement('p');
-  text.innerText = 'Register form';
-
-  let firstName = document.createElement('input');
-  firstName.placeholder = 'First name';
-  firstName.value = user.firstName;
-  let lastName = document.createElement('input');
-  lastName.placeholder = 'Last Name';
-  lastName.value = user.lastName;
-  let registerPassword = document.createElement('input');
-  registerPassword.type = 'password';
-  registerPassword.placeholder = 'Password';
-  registerPassword.value = user.password;
-
-  let submit = document.createElement('button');
-  submit.innerText = 'Update!';
+  let submit = document.getElementById('updateBtn');
   submit.addEventListener('click', function(ev){
     let userEditMenu = ev.target.parentNode;
     user.firstName = userEditMenu.childNodes[0].value;
@@ -318,16 +245,13 @@ function initialiseSettigns() {
     storeUser(user);
     renderDashboard();
   });
+}
 
-  userEditMenu.appendChild(firstName);
-  userEditMenu.appendChild(lastName);
-  userEditMenu.appendChild(registerPassword);
-  userEditMenu.appendChild(submit);
-  
-  app.appendChild(userEditMenu);
+function renderSettingsTemplate() {
+  return `<input placeholder="First name"><input placeholder="Last Name"><input type="password" placeholder="Password"><button id="updateBtn">Update!</button>`;
 }
 
 function errMsg(msg) {
-  document.getElementById('notification').innerHTML = '<span style="background:red;"> Error: ' + msg +"</span>";
+  document.getElementById('notification').innerHTML = `<span style="background:red;"> Error: ${msg} </span>`;
 }
 

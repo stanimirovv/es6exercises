@@ -24,8 +24,8 @@ When a user is viewing a (new or existing) list, they should be able to :
 3. Check off an item as "done", and uncheck it as well
 4. Save the list
 
-Users 
-
+Users
+ 
 1. If the user is logged in, then at the top of the screen, on every page of the site, there should be a "log out" button. Clicking that should log the user out.
 2. If the user is logged in, then at the top of the screen, on every page of the site, there should be a button that says "account settings". Clicking that link should take the user to a page where they can edit any/all of the information they entered on the signup form.
 3. Your application should support as many unique users as possible. The actions that one user takes within the application should have virtually no effect on what other users are doing.
@@ -34,4 +34,20 @@ Extra Credit:
 
 If you feel like getting fancy, try to find an open-source JS library for hashing passwords (using any hashing function you prefer). Hash the passwords when you receive them and only store the hash rather than the raw password.
 As mentioned above, storing actual users' passwords (in a real life application) is far more complex than this, and often involves many moving parts, but it's still good practice to get used to using hashing libraries.
+
+
+Homework 9:
+
+1. Modify your pages so that all of the HTML within the <body> is written by Javascript (rather than hardcoded onto the page).
+
+2. Break all your HTML into separate Javascript templates, using template literals.
+
+3. Make sure that any variables that appear are not harcoded, but are presented via those template literals. Keep your templates free of as much text and numbers as possible, pushing all that data into variables instead. 
+
+
+Extra Credit:
+
+In addition to template-izing the <body> see if you can do so for the some of the <head> tags like the <title> and various pieces of meta data.
+
+
 
