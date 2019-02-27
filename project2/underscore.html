@@ -1,0 +1,114 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=1024" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <title>impress.js | presentation tool based on the power of CSS3 transforms and transitions in modern browsers | by Bartek Szopka @bartaz</title>
+    
+    <meta name="description" content="impress.js is a presentation tool based on the power of CSS3 transforms and transitions in modern browsers and inspired by the idea behind prezi.com." />
+    <meta name="author" content="Bartek Szopka" />
+
+    <link href="//fonts.googleapis.com/css?family=Open+Sans:regular,semibold,italic,italicsemibold|PT+Sans:400,700,400italic,700italic|PT+Serif:400,700,400italic,700italic" rel="stylesheet" />
+
+    <link href="css/demo.css" rel="stylesheet" />
+    
+    <link rel="shortcut icon" href="favicon.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
+</head>
+
+<body class="impress-not-supported">
+
+<div class="fallback-message">
+    <p>Your browser <b>doesn't support the features required</b> by impress.js, so you are presented with a simplified version of this presentation.</p>
+    <p>For the best experience please use the latest <b>Chrome</b>, <b>Safari</b> or <b>Firefox</b> browser.</p>
+</div>
+<div id="impress" data-autoplay="7">
+
+<!--
+
+Slide 10:
+If functionality is not enough - try the contrib which offers even more functions
+
+-->
+    <div id="1" class="step slide" data-x="-2000" data-y="-1500" data-autoplay="10">
+        <q>Underscore.js is a utility-belt library for JavaScript that provides support for the usual functional suspects (each, map, reduce, filter...) without extending any core JavaScript objects.</q>
+    </div>
+    <div id="2" class="step slide" data-x="-1000" data-y="-1500" data-autoplay="10">
+        <q>It is opensource and you can get it here <a href="https://underscorejs.org/">Underscore site</a></q>
+    </div>
+    <div id="3" class="step slide" data-x="-3000" data-y="-1500" data-autoplay="10">
+        <p>Features:</p>
+        <ol>
+            <li>- Small size</li>
+            <li>- 100+ functions</li>
+            <li>- No standard object modification</li>
+            <li>- Open source</li>
+        </ol>
+    </div>
+    <div id="4" class="step slide" data-x="-3000" data-y="-2500" data-autoplay="10">
+        <q> Why use it? </q>
+        <ol>
+            <li>- Faster development time</li>
+            <li>- Less bugs</li>
+            <li>- Less lines of code that need to be written</li>
+        </ol>
+    </div>
+    <div id="5" class="step slide" data-x="-1000" data-y="-3500" data-autoplay="10">
+        <q> How to install ?<q>
+        <ol>
+            <li>Add from cdn CDN</li>
+            <li>Or download and include manually. No dependencies.</li>
+        </ol>
+    </div>
+    <div id="6" class="step slide" data-x="-1000" data-y="-4500" data-autoplay="10">
+        <p>Hello world in underscore:</p>
+        <p> _.random(3, 10) </p>
+        <p>will print a random integer between 3 and 10 inclusive</p>
+    </div>
+    <div id="7" class="step slide" data-x="-1000" data-y="-5500" data-autoplay="10">
+        <p>Useful array functions:</p>
+        <p>flatten - flattens a nested array</p> 
+        <p>_flatten([1, [2], [3, [[4]]]]</p> 
+        <p>Returned value: [1, 2, 3, [[4]]]; </p>
+    </div>
+    <div id="8" class="step slide" data-x="3000" data-y="-1500" data-autoplay="10">
+        <p>Useful array functions PT2:</p>
+        <p>uniq - removes duplicates from an array</p> 
+        <p>_.uniq([1, 2, 1, 4, 1, 3]);</p> 
+        <p>Returned value: [1, 2, 4, 3]</p>
+    </div>
+    <div id="9" class="step slide" data-x="3000" data-y="1500" data-autoplay="10">
+        <p>Useful object functions:</p>
+        <p>pick - return copy of object with selected values, easily filter out private fields before returning result</p> 
+        <p>_.pick({publicField: 'asd', publicField2: 'dzhe', privateField: 'secretField'}, 'publicField', 'publicField2');</p> 
+        <p>Returned value: {publicField: 'asd', publicField2: 'dzhe'}</p>
+    </div>
+    <div id="10" class="step slide" data-x="3000" data-y="2500" data-autoplay="10">
+        <p>Useful object functions PT2:</p>
+        <p>isEqual - deep comparison between objects</p> 
+        <p>var stooge = {name: 'moeFoe', luckyNumbers: [13, 27, 34]};<br/>
+            var clone  = {name: 'moeFoe', luckyNumbers: [13, 27, 34]};<br/>
+            _.isEqual(stooge, clone); 
+        </p> 
+        <p>Returned value: true, but == comparisson would return false</p>
+    </div>
+    <div id="11" class="step slide" data-x="4000" data-y="2500" data-autoplay="10">
+        <q>Thank you!</q>
+    </div>
+</div>
+<div class="hint">
+    <p>Use a spacebar or arrow keys to navigate. <br/>
+       Press 'P' to launch speaker console.</p>
+</div>
+<script>
+if ("ontouchstart" in document.documentElement) { 
+    document.querySelector(".hint").innerHTML = "<p>Swipe left or right to navigate</p>";
+}
+</script>
+<script src="js/impress.js"></script>
+<script>impress().init();</script>
+
+</body>
+</html>
