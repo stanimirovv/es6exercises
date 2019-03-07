@@ -1,95 +1,148 @@
-
 const up = 'up';
 const down = 'down';
 
-/*
- * Cases:
- *  - elevator is empty  - OK
- *  - is in path of elevator, same direction, can be picked up  - OK
- *  - is in path of elevator, same direction, but after the destination
- *  - is in Path of elevator, but different direction, can be picked up - OK, but needs rework after the second elevator appears
- *  - is in Path of elevator, but different direction, outside of path  - OK
- */
-
-//TODO implement for multiple elevators
-function ElevatorSystem(numberOfFloors, elevators) {
+function ElevatorSystem() {
+  // 1 is basement 2 is parter, so to  get the floor number in the building you need to add 2
   this.numberOfFloors = 12;
-  this.currentFloor = 1;
-  this.destinationFloor = null;
-  this.destinationQueue = [];
-  this.currentDirection = null;
-
-  this.elevators = [ 
-                    { allowedFloors:[1,2,3,4,5,6,7,8,9,10,11] },
-                    { allowedFloors:[2,3,4,5,6,7,8,9,10,11,12] },
-                  ];
+  this.elevators = { 
+                     "A" : {  allowedFloors:[1,2,3,4,5,6,7,8,9,10,11],
+                              destinationFloor : 0,
+                              destinationQueue : [],
+                              currentDirection : up,
+                              currentFloor : 1,                      
+                              label : "A",                      
+                     },
+                    "B" : {   allowedFloors:[2,3,4,5,6,7,8,9,10,11,12],
+                              destinationFloor : 5,
+                              destinationQueue : [],
+                              currentDirection : up,
+                              currentFloor : 4,
+                              label : "B",
+                    },
+                  };
 
   this.goto = (destinationFloor) => {
-
-      if ( !isInBoundries(destinationFloor, 1, numberOfFloors)) {
+      console.log('New request for: ', destinationFloor);
+      // Ensure it is a valid floor
+      if ( !isInBoundries(destinationFloor, 1, this.numberOfFloors)) {
         console.log(`Non existing floor: ${destinationFloor}`);
         return;
       }
-    
-      let destinationDirection = this.calculateDirection(destinationFloor); 
-      // When elevator is empty
-      if (this.destinationFloor === null || this.destinationFloor === undefined) {
-        console.log('Starting floor');
-        this.destinationFloor = destinationFloor;
-        this.currentDirection = destinationDirection;
-      } else if (destinationFloor < this.destinationFloor && destinationDirection === this.currentDirection ) { // Elevator has destination
-        console.log('Picking up someone!');
-        this.destinationQueue.push(this.destinationFloor);
-        this.destinationFloor = destinationFloor;
-      } else if (destinationFloor > this.destinationFloor && destinationDirection === this.currentDirection ){
-        console.log(`Goint to pick from${destinationFloor} since it is in same direction ${this.currentFloor}`);
-        this.destinationQueue.push(destinationFloor);
+
+      // Special cases
+      if ( !canGoTo(destinationFloor, this.elevators.A)) {
+        this.queue(this.elevators.B, destinationFloor);
+      }
+
+      if ( !canGoTo(destinationFloor, this.elevators.B)) {
+        this.queue(this.elevators.A, destinationFloor);
+      }
+
+      // Calcualte shorter distance, between both elevators
+      const distanceFromA = this.countDistance( this.elevators.A, destinationFloor );
+      const distanceFromB = this.countDistance( this.elevators.B, destinationFloor );
+
+      if ( distanceFromA > distanceFromB) {
+        this.queue(this.elevators.B, destinationFloor);
       } else {
-        // Is in different direction
-        console.log(`Someone on floor ${destinationFloor} made a request, putting in queue since it is below current floor ${this.currentFloor}`);
-        this.destinationQueue.push(destinationFloor);
+        this.queue(this.elevators.A, destinationFloor);
       }
   }
 
+  this.queue = (elevator, destinationFloor) => {
+    let destinationDirection = this.calculateDirection(elevator, destinationFloor); 
+    let isElevatorEmpty = this.destinationFloor === null || this.destinationFloor === undefined;
+    let isSameDestinationBeforeCurrDest = destinationFloor < this.destinationFloor && destinationDirection === this.currentDirection 
+    let isSameDirectionAfterCurrDest = destinationFloor > this.destinationFloor && destinationDirection === this.currentDirection 
+    if (isElevatorEmpty) {
+      console.log('Starting floor');
+      elevator.destinationFloor = destinationFloor;
+      elevator.currentDirection = destinationDirection;
+    } else if (isSameDirectionAfterCurrDest) { // Elevator has destination
+      console.log('Picking up someone!');
+      elevator.destinationQueue.push(this.destinationFloor);
+      elevator.destinationFloor = destinationFloor;
+    } else if (isSameDirectionAfterCurrDest) {
+      console.log(`Going to pick from${destinationFloor} since it is in same direction ${this.currentFloor}`);
+      elevator.destinationQueue.push(destinationFloor);
+    } else {
+      // Is in different direction
+      console.log(`Someone on floor ${destinationFloor} made a request, putting in queue since it is below current floor ${this.currentFloor}`);
+      elevator.destinationQueue.push(destinationFloor);
+    }
+
+  }
+
+  this.countDistance = (elevator, destinationFloor) => {
+    // calc distance going up
+    let distance;
+    if ( elevator.currentDirection === up && destinationFloor > elevator.currentFloor ) {
+      distance = destinationFloor - elevator.currentFloor;
+    }
+
+    // cal distance going down
+    if ( elevator.currentDirection === down && destinationFloor < elevator.currentFloor ) {
+      distance = elevator.currentFloor - destinationFloor;
+    }
+
+    // calc distance going up, but direction is down
+    if ( elevator.currentDirection === up && destinationFloor < elevator.currentFloor ) {
+      distance = ( elevator.destinationFloor - elevator.currentFloor) + (elevator.destinationFloor - destinationFloor);
+    }
+
+    if ( elevator.currentDirection === down && destinationFloor > elevator.currentFloor ) {
+      distance = ( elevator.currentFloor - elevator.destinationFloor) + (destinationFloor - elevator.destinationFloor);
+    }
+
+    distance = Math.abs(distance); // distance is always positive
+    console.log(`Label: ${elevator.label}, destinationFloor: ${elevator.destinationFloor}, currentFloor: ${elevator.currentFloor} destinationFloor: ${destinationFloor}, sdistance: ${distance}`);
+    return distance;
+  }
+
   this.travel = () => {
-    if (this.destinationFloor === undefined || this.destinationFloor === null ) {
+    this.elevatorTravel(this.elevators.A);
+    this.elevatorTravel(this.elevators.B);
+  }
+
+  this.elevatorTravel = (elevator) => {
+    if (elevator.destinationFloor === undefined || elevator.destinationFloor === null ) {
       return;
     }
 
-    this.currentDirection === up ? this.currentFloor++ : this.currentFloor--;
-    console.log(`Move elevator to ${this.currentFloor} destination: ${this.destinationFloor}`);
-    if ( this.currentFloor === this.destinationFloor) {
-      console.log('Open doors');
+    elevator.currentDirection === up ? elevator.currentFloor++ : elevator.currentFloor--;
+    console.log(`Move elevator ${elevator.label} to ${elevator.currentFloor} destination: ${elevator.destinationFloor}`);
+    if ( elevator.currentFloor === elevator.destinationFloor) {
+      console.log(`Elevator: ${elevator.label} Open doors`);
       // elevator doors close automatically after some seconds
-      console.log('Close doors');
-      let destinationFloor = this.destinationQueue.shift();
-      this.currentDirection = this.calculateDirection(destinationFloor);
-      this.destinationFloor = destinationFloor;
-      console.log(`New destination: ${this.destinationFloor} Direction: ${this.currentDirection}`);
+      console.log(`Elevator: ${elevator.label} Close doors`);
+      elevator.destinationFloor = undefined;
+      let destinationFloor = elevator.destinationQueue.shift();
+      if (destinationFloor != undefined ) {
+        elevator.currentDirection = this.calculateDirection(elevator, destinationFloor);
+        elevator.destinationFloor = destinationFloor;
+        console.log(`New destination: ${elevator.destinationFloor} Direction: ${elevator.currentDirection}`);
+      } else {
+        // console.log(`Elevator ${elevator.label} waiting for request`);
+      }
     }
-
   }
 
   function isInBoundries(test, startBoundry, endBoundry) {
     return test >= startBoundry && test <= endBoundry;
   }
 
-  this.calculateDirection = (destinationFloor) => {
-    return this.currentFloor - destinationFloor > 0 ? down : up; 
+  function canGoTo(test, elevator) {
+    return test >= elevator.allowedFloors[0] && test <= elevator.allowedFloors[  elevator.allowedFloors.length -1];
   }
 
-
+  this.calculateDirection = (elevator, destinationFloor) => {
+    return elevator.currentFloor - destinationFloor > 0 ? down : up; 
+  }
 }
 
-const elevators = [
-                  ];
-
-// 1 is basement 2 is parter, so to  get the floor number in the building you need to add 2
-const buildingElevators = new ElevatorSystem(12, elevators);
-
-
-buildingElevators.goto(7);
+const buildingElevators = new ElevatorSystem();
 setInterval(buildingElevators.travel, 1000);
-setTimeout(() => {buildingElevators.goto(4)}, 2000);
-setTimeout(() => {console.log('SSSSSSSSS'); buildingElevators.goto(4)}, 9000);
-setTimeout(() => {buildingElevators.goto(2)}, 3000);
+buildingElevators.goto(3);
+buildingElevators.goto(7);
+setTimeout( () => {buildingElevators.goto(9)}, 2000);
+setTimeout( () => {buildingElevators.goto(1)}, 2000);
