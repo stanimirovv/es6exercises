@@ -8,8 +8,8 @@ function ElevatorSystem() {
                      "A" : {  allowedFloors:[1,2,3,4,5,6,7,8,9,10,11],
                               destinationFloor : 2,
                               destinationQueue : [],
-                              currentDirection : up,
-                              currentFloor : 1,
+                              currentDirection : down,
+                              currentFloor : 10,
                               label : "A",                      
                               isStopped : false,
                      },
@@ -45,11 +45,21 @@ function ElevatorSystem() {
       const distanceFromB = this.countDistance( this.elevators.B, destinationFloor );
 
       if ( distanceFromA > distanceFromB) {
-        console.log(`Queueing ${destinationFloor} to elevator B`);
-        this.queue(this.elevators.B, destinationFloor);
+        if ( this.elevators.A.destinationQueue.length === 0 && this.elevators.B.destinationQueue.length > 0) {
+          console.log(`Queueing ${destinationFloor} to elevator A, since A has empty queue`);
+          this.queue(this.elevators.A, destinationFloor);
+        } else {
+          console.log(`Queueing ${destinationFloor} to elevator B`);
+          this.queue(this.elevators.B, destinationFloor);
+        }
       } else {
-        console.log(`Queueing ${destinationFloor} to elevator A`);
-        this.queue(this.elevators.A, destinationFloor);
+        if ( this.elevators.B.destinationQueue.length === 0 && this.elevators.A.destinationQueue.length > 0 ) {
+          console.log(`Queueing ${destinationFloor} to elevator B, since B has empty queue`);
+          this.queue(this.elevators.B, destinationFloor);
+        } else {
+          console.log(`Queueing ${destinationFloor} to elevator A`);
+          this.queue(this.elevators.A, destinationFloor);
+        }
       }
   }
 
@@ -139,16 +149,17 @@ function ElevatorSystem() {
     this.elevators[elevatorLabel].isStopped = false;
   }
 
+  this.calculateDirection = (elevator, destinationFloor) => {
+    return elevator.currentFloor - destinationFloor > 0 ? down : up; 
+  }
+
+  // private functions
   function isInBoundries(test, startBoundry, endBoundry) {
     return test >= startBoundry && test <= endBoundry;
   }
 
   function canGoTo(test, elevator) {
     return test >= elevator.allowedFloors[0] && test <= elevator.allowedFloors[  elevator.allowedFloors.length -1];
-  }
-
-  this.calculateDirection = (elevator, destinationFloor) => {
-    return elevator.currentFloor - destinationFloor > 0 ? down : up; 
   }
 }
 
