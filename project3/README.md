@@ -1,4 +1,28 @@
+# Documentation
 
+## How to use
+1. the file creates the elevator system and sets the moving timer for both elevators (the function is travel())
+2. use the ElevatorSystem.goto() function to call an elevator 
+3. use ElevatorSystem.stopElevator(label) for the panic button where label is 'A' or 'B'
+4. use ElevatorSystem.resumeElevator(label) to resume the elevator to operating where label is 'A' or 'B'
+5. Inside the elevator, again use the ElevatorSystem.goto() function to force the elevator to go the appropriate floor
+
+NOTE: both up and down buttons should call the same function, the implemented algorithm didn't get a performance boost by knowing the direction the passanger intended to go, so the extra complexity was omited.
+
+## Algorithm overview
+1. Verify if it is one of the edge cases (specifically the -1 or 10th floor) it if it is, put it in the queue of the appropriate elevator
+2. Calculate the distance each elevator would have to travel before it would arrive to the destination. There are several cases here, if it is along the way if it was skipped, if it is just after the way,etc)
+3. Assign the destination to the appropriate elevator
+4. Depending on several conditions, the elevator may change it's current destination to accomodate the new destination (primarily if it can be reached while going to it's current destination) or it may put it in it's waiting queue. 
+5. Every second the elevators are given commands - if the destination is reached, a new one is picked from the front of the queue; 
+
+Notes:
+- the queue itself shouldn't be optimised since some routes will wait for a while (smaller trips will be prioritised whilist longer ones will wait for a much longer period)
+- the algorithm takes into account the current position and destination, there may be a performance gain if the queue is rebalanced on each insert of a new element
+- The logs with ACTION: are the 3 permitted logs bellow. The rest are intended to help follow the program more easily.
+- Storing the currentDirection is a design flaw, it can easily be derived
+
+# Task
 Details:
  
 You've been hired by a construction firm to help build the "brain" for a set of elevators in a new building. Your task is to write the code that will control the elevators, and tell each elevator which floor to travel to next.
@@ -9,8 +33,6 @@ The building is 10 stories tall and the floors are numbered 0 - 10 inclusive. Th
 The building contains 2 elevators: A and B.
 Elevator A: Goes to all floors except the penthouse (floor 10).
 Elevator B: Goes all the way up (including 10) but does not go to the basement (-1).
-
-
 
 Calling the Elevators
 
