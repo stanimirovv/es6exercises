@@ -1,4 +1,10 @@
 /*
+ * NOTE: I am using the datetime-local input type, I am aware that it is relatively new and maybe error prone in some browsers (or not fully supported)
+ * But I wanted to test it out. I hope this isn't an issue.
+ */ 
+
+
+/*
  * Storage
  */
 function Storage() {
