@@ -116,22 +116,20 @@ window.onload = () => {
     alarmManager.renderAlarms();
   });
 
+  // Create worker for notifications
+  const myWorker = new Worker('worker.js');
+
+  myWorker.addEventListener('message', (e) => {
+    console.log(`[Worker RESPONSE] : ${e.data}`);
+  }, false);
+
+  myWorker.addEventListener('error', (e) => {
+    console.log(`[Worker ERROR] : Line ${e.lineno} in ${e.filename} : ${e.message}`);
+  }, false);
+
   window.setInterval(() => {
-    // loop through all alarms, if it is a match...
     if ( alarmManager.alarmIsTriggered() ) {
-      if (Notification.permission === "granted") {
-        var notification = new Notification("Hi there!");
-        setTimeout(notification.close.bind(notification), 1000);
-      } else if (Notification.permission !== 'denied') {
-        Notification.requestPermission(function (permission) {
-          if (permission === "granted") {
-            var notification = new Notification("Hi there!");
-            setTimeout(notification.close.bind(notification), 1000);
-          }
-         });
-      } else {
-        alert('ALARM!');
-      }
+      myWorker.postMessage('ok');
     }
   }, 1000);
 };
