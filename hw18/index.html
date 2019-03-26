@@ -25,6 +25,7 @@ navigator.geolocation.getCurrentPosition((geoLoc) => {
   var marker = new google.maps.Marker({position: currLoc, map: map});
 }, () => { alert('Error getting current location!')});
 
+// NOTE: I have not added my api key, if required I can provide it, but due to google restrictions, etc I prefer this way.
     </script>
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
